@@ -1,25 +1,36 @@
-import RestaurantRepo from '../repo/RestaurantRepo'
 import React, {useEffect, useState} from 'react'
 import {RestaurantDetails} from '../model/Restaurant'
-import Router from '../router/Router'
+import {useParams} from 'react-router-dom'
+import {Category} from '../model/Category'
 
-type RestaurantDetailsProps = {
-    restaurantRepo: RestaurantRepo,
-    router: Router
-}
-
-export default function RestaurantDetailsPage(props: RestaurantDetailsProps) {
+export default function RestaurantDetailsPage() {
     const [restaurantDetails, setRestaurantDetails] = useState<RestaurantDetails>()
-    const restaurantId = props.router.getUrlParamId("restaurantId")
+    const {restaurantId} = useParams()
+
+    const getDetails = (id: number) => {
+        const stubValueToBeReplacedByNetworkCallOnceApiIsAvailable = Promise.resolve(
+            new RestaurantDetails(1,
+                'Restaurant A',
+                'All the best A cuisine! Really exciting and tasty food at a reasonable price!',
+                [
+                    new Category(1, 'Curry'),
+                    new Category(2, 'Spicy')
+                ],
+                4
+            )
+        )
+        return stubValueToBeReplacedByNetworkCallOnceApiIsAvailable
+    }
 
     useEffect(() => {
-        props.restaurantRepo.getDetails(restaurantId)
+        getDetails(restaurantId)
             .then(setRestaurantDetails)
             .catch(_ => {})
-    }, [props.restaurantRepo, restaurantId])
+    }, [restaurantId])
 
     if (restaurantDetails == null) {
         return <div>No Restaurant found for ID {restaurantId}</div>
+
     }
 
     return (
